@@ -8,7 +8,61 @@ API_KEY = "api_key=fymalkzvEUpMBhhBIpi39IQu0zqsjMy7K2AYhiwJ"
 EPIC_BASE_URL = "https://epic.gsfc.nasa.gov/"
 MARS_ROVER_PHOTOS_BASE_URL = "https://api.nasa.gov/mars-photos/api/v1/"
 NASA_LIBRARY_BASE_URL = "https://images-api.nasa.gov/search?"
+APOD_BASE_URL = "https://api.nasa.gov/planetary/apod?"
 NUMBER_OF_PHOTOS_TO_COLLECT = 1
+
+
+# ************************************************************************************************************** #
+
+def getAstronomyPictureOfTheDay(image_directory, date, hd):
+    log.debug("Retrieving APOD (Astronomy Picture Of the Day) image")
+    log.info("The selected directory is - {}".format(image_directory))
+    log.info("Selected date is - {}".format(date))
+    log.warning("Date format has to be YYYY-MM-DD of an existing date")
+    log.info("HD version of the image - {}".format(hd))
+
+    url = getAstronomyPictureOfTheDayUrl(date, hd)
+    log.debug("Changing command line working directory to given directory")
+    os.chdir(image_directory)
+    log.info("Images will be saved as .JPG files")
+    log.info("Image URL is - {}".format(url))
+    CommandLine.runCmd(["wget", "-O", "APOD_" + date + ".JPG", url])
+
+    log.info("For full API documentation - https://api.nasa.gov/")
+
+
+def getAstronomyPictureOfTheDayUrl(date, hd):
+    log.debug("Using API GET request to receive the JSON with the relevant information")
+
+    url_complement = "date=" + date + "&" + "hd=" + str(hd) + "&" + API_KEY
+    log.debug("The API request is - {}".format(APOD_BASE_URL + url_complement))
+    r = requests.get(APOD_BASE_URL + url_complement)
+    log.debug("Request status code is - {}".format(r.status_code))
+    if r.status_code == 400:
+        log.warning("Perhaps bad date format or non-existing date given?")
+    assert r.status_code == 200, "Status code is " + str(r.status_code)
+
+    log.debug("Compiling a URL list of the images to retrieve")
+    json_object = r.json()
+    log.debug(json_object)
+
+    print("\nIMAGE INFORMATION:")
+    copy_right = json_object["copyright"]
+    print("Copyright - {}".format(copy_right))
+    date = json_object["date"]
+    print("Date - {}".format(date))
+    explanation = json_object["explanation"]
+    print("explanation - {}".format(explanation))
+    media_type = json_object["media_type"]
+    print("media_type - {}".format(media_type))
+    service_version = json_object["service_version"]
+    print("service_version - {}".format(service_version))
+    title = json_object["title"]
+    print("title - {}".format(title))
+    url = json_object["url"]
+    print("url - {}".format(url) + "\n")
+
+    return url
 
 
 # ************************************************************************************************************** #
@@ -17,6 +71,7 @@ NUMBER_OF_PHOTOS_TO_COLLECT = 1
 def getNasaEpicImage(image_directory):
     log.debug("Retrieving Nasa EPIC (Earth Polychromatic Imaging Camera) images")
     log.info("The selected directory is - {}".format(image_directory))
+
     url_list = getNasaEpicImagesUrl()
     i = 0
     log.debug("Changing command line working directory to given directory")
@@ -125,17 +180,18 @@ def getMarsRoverManifest(rover):
 
     json_manifest = r.json()
     log.debug(json_manifest)
+    print("\nIMAGE INFORMATION:")
     json_photo_manifest = json_manifest["photo_manifest"]
     landing_date = json_photo_manifest["landing_date"]
-    log.info("Landing date is - {}".format(landing_date))
+    print("Landing date is - {}".format(landing_date))
     max_date = json_photo_manifest["max_date"]
-    log.info("Maximum date is - {}".format(max_date))
+    print("Maximum date is - {}".format(max_date))
     max_sol = json_photo_manifest["max_sol"]
-    log.info("Maximum sol is - {}".format(max_sol))
+    print("Maximum sol is - {}".format(max_sol))
     status = json_photo_manifest["status"]
-    log.info("The current status of the rover is - {}".format(status))
+    print("The current status of the rover is - {}".format(status))
     total_photos = json_photo_manifest["total_photos"]
-    log.info("The total amount of photos taken by the rover is - {}".format(total_photos))
+    print("The total amount of photos taken by the rover is - {}".format(total_photos) + "\n")
 
     log.debug("returning a dictionary with the rover manifest")
     return {"rover": rover, "landing_date": landing_date, "max_date": max_date, "max_sol": max_sol,
