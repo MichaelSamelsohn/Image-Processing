@@ -12,6 +12,7 @@ NUMBER_OF_PHOTOS_TO_COLLECT = 1
 # ************************************************************************************************************** #
 
 def getMarsRoverImages(image_directory, rover, sol, date):
+    print("\nRetrieving Mars rover images\n")
     log.debug("Retrieving Mars rover images")
     log.info("The options for the Mars rovers are - Spirit/Opportunity/Curiosity")
     log.info("The selected directory is - {}".format(image_directory))

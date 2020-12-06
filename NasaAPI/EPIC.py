@@ -11,6 +11,7 @@ NUMBER_OF_PHOTOS_TO_COLLECT = 1
 # ************************************************************************************************************** #
 
 def getNasaEpicImage(image_directory):
+    print("\nRetrieving Nasa EPIC (Earth Polychromatic Imaging Camera) images\n")
     log.debug("Retrieving Nasa EPIC (Earth Polychromatic Imaging Camera) images")
     log.info("The selected directory is - {}".format(image_directory))
 

@@ -6,12 +6,12 @@ import Logging
 
 API_KEY = "api_key=fymalkzvEUpMBhhBIpi39IQu0zqsjMy7K2AYhiwJ"
 APOD_BASE_URL = "https://api.nasa.gov/planetary/apod?"
-NUMBER_OF_PHOTOS_TO_COLLECT = 1
 
 
 # ************************************************************************************************************** #
 
 def getAstronomyPictureOfTheDay(image_directory, date, hd):
+    print("\nRetrieving APOD (Astronomy Picture Of the Day) image\n")
     log.debug("Retrieving APOD (Astronomy Picture Of the Day) image")
     log.info("The selected directory is - {}".format(image_directory))
     log.info("Selected date is - {}".format(date))

@@ -1,5 +1,3 @@
-import NasaAPI
-
 from APOD import getAstronomyPictureOfTheDay
 from EPIC import getNasaEpicImage
 from EarthObservation import getEarthObservationImage
@@ -44,9 +42,9 @@ END_YEAR = "2020"
 
 
 def main():
-    # getAstronomyPictureOfTheDay(image_directory=APOD_IMAGES,
-    #                             date=APOD_DATE,
-    #                             hd=HD)
+    getAstronomyPictureOfTheDay(image_directory=APOD_IMAGES,
+                                date=APOD_DATE,
+                                hd=HD)
 
     getEarthObservationImage(image_directory=EARTH_OBSERVATION_IMAGES,
                              lat=LAT,
@@ -55,20 +53,20 @@ def main():
                              date=EARTH_OBSERVATION_DATE,
                              direct_method=DIRECT_METHOD)
 
-    # getTechTransferInformation(parameter=QUERY_TYPE, query=QUERY_TECH_TRANSFER)
+    getTechTransferInformation(parameter=QUERY_TYPE, query=QUERY_TECH_TRANSFER)
 
-    # getNasaEpicImage(image_directory=NASA_EPIC_IMAGES)
-    #
-    # getMarsRoverImages(image_directory=MARS_ROVER_IMAGES,
-    #                    rover=ROVER,
-    #                    sol=SOL,
-    #                    date=MARS_DATE)
-    #
-    # getNasaLibraryImages(image_directory=NASA_LIBRARY_IMAGES,
-    #                      q=SEARCH_QUERY,
-    #                      mediaType=MEDIA_TYPE,
-    #                      startYear=START_YEAR,
-    #                      endYear=END_YEAR)
+    getNasaEpicImage(image_directory=NASA_EPIC_IMAGES)
+
+    getMarsRoverImages(image_directory=MARS_ROVER_IMAGES,
+                       rover=ROVER,
+                       sol=SOL,
+                       date=MARS_DATE)
+
+    getNasaLibraryImages(image_directory=NASA_LIBRARY_IMAGES,
+                         q=SEARCH_QUERY,
+                         mediaType=MEDIA_TYPE,
+                         startYear=START_YEAR,
+                         endYear=END_YEAR)
 
 
 if __name__ == "__main__":

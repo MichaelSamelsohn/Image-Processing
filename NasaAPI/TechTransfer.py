@@ -11,6 +11,7 @@ TECH_TRANSFER_BASE_URL = "https://api.nasa.gov/techtransfer/"
 # ************************************************************************************************************** #
 
 def getTechTransferInformation(parameter, query):
+    print("\nRetrieving information of innovations developed for exploration and discovery\n")
     log.debug("Retrieving information of innovations developed for exploration and discovery")
     log.info("The selected parameter (query type) is - {}".format(parameter))
     log.info("Selected query is - {}".format(query))
