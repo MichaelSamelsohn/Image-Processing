@@ -1,4 +1,9 @@
-import Nasa
+import NasaAPI
+
+from APOD import getAstronomyPictureOfTheDay
+from EPIC import getNasaEpicImage
+from ImageLibrary import getNasaLibraryImages
+from MarsRovers import getMarsRoverImages
 
 # TODO: Set the directory paths according to your system
 APOD_IMAGES = "/Users/michaelsamelsohn/PycharmProjects/Nasa_Images/Images/ApodImages"
@@ -25,20 +30,22 @@ END_YEAR = "2020"
 
 
 def main():
-    Nasa.getAstronomyPictureOfTheDay(image_directory=APOD_IMAGES,
-                                     date=APOD_DATE,
-                                     hd=HD)
+    getAstronomyPictureOfTheDay(image_directory=APOD_IMAGES,
+                                date=APOD_DATE,
+                                hd=HD)
 
-    # Nasa.getNasaEpicImage(image_directory=NASA_EPIC_IMAGES)
-
-    # Nasa.getMarsRoverImages(image_directory=MARS_ROVER_IMAGES,
-    #                         rover=ROVER, sol=SOL, date=MARS_DATE)
-
-    # Nasa.getNasaLibraryImages(image_directory=NASA_LIBRARY_IMAGES,
-    #                           q=SEARCH_QUERY,
-    #                           mediaType=MEDIA_TYPE,
-    #                           startYear=START_YEAR,
-    #                           endYear=END_YEAR)
+    # getNasaEpicImage(image_directory=NASA_EPIC_IMAGES)
+    #
+    # getMarsRoverImages(image_directory=MARS_ROVER_IMAGES,
+    #                    rover=ROVER,
+    #                    sol=SOL,
+    #                    date=MARS_DATE)
+    #
+    # getNasaLibraryImages(image_directory=NASA_LIBRARY_IMAGES,
+    #                      q=SEARCH_QUERY,
+    #                      mediaType=MEDIA_TYPE,
+    #                      startYear=START_YEAR,
+    #                      endYear=END_YEAR)
 
 
 if __name__ == "__main__":
