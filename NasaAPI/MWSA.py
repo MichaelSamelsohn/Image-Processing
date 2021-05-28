@@ -1,7 +1,4 @@
-import json
 import requests
-import os
-import CommandLine
 import logging as log
 import Logging
 

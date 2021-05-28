@@ -11,18 +11,17 @@ APOD_BASE_URL = "https://api.nasa.gov/planetary/apod?"
 # ************************************************************************************************************** #
 
 def getAstronomyPictureOfTheDay(image_directory, date, hd):
-    print("\nRetrieving APOD (Astronomy Picture Of the Day) image\n")
     log.debug("Retrieving APOD (Astronomy Picture Of the Day) image")
-    log.info("The selected directory is - {}".format(image_directory))
-    log.info("Selected date is - {}".format(date))
+    log.debug("The selected directory is - {}".format(image_directory))
+    log.debug("Selected date is - {}".format(date))
     log.warning("Date format has to be YYYY-MM-DD of an existing date")
-    log.info("HD version of the image - {}".format(hd))
+    log.debug("HD version of the image - {}".format(hd))
 
     url = getAstronomyPictureOfTheDayUrl(date, hd)
     log.debug("Changing command line working directory to given directory")
     os.chdir(image_directory)
-    log.info("Images will be saved as .JPG files")
-    log.info("Image URL is - {}".format(url))
+    log.debug("Images will be saved as .JPG files")
+    log.debug("Image URL is - {}".format(url))
     CommandLine.runCmd(["wget", "-O", "APOD_" + date + ".JPG", url])
 
     log.info("For full API documentation - https://api.nasa.gov/")
@@ -31,7 +30,7 @@ def getAstronomyPictureOfTheDay(image_directory, date, hd):
 def getAstronomyPictureOfTheDayUrl(date, hd):
     log.debug("Using API GET request to receive the JSON with the relevant information")
 
-    url_complement = "date=" + date + "&" + "hd=" + str(hd) + "&" + API_KEY
+    url_complement = "date=" + date + "&" + API_KEY
     log.debug("The API request is - {}".format(APOD_BASE_URL + url_complement))
     r = requests.get(APOD_BASE_URL + url_complement)
     log.debug("Request status code is - {}".format(r.status_code))
@@ -41,24 +40,12 @@ def getAstronomyPictureOfTheDayUrl(date, hd):
 
     log.debug("Compiling a URL list of the images to retrieve")
     json_object = r.json()
-    log.debug(json_object)
+    log.info(json_object)
 
-    print("\nIMAGE INFORMATION:")
-    copy_right = json_object["copyright"]
-    print("Copyright - {}".format(copy_right))
-    date = json_object["date"]
-    print("Date - {}".format(date))
-    explanation = json_object["explanation"]
-    print("explanation - {}".format(explanation))
-    media_type = json_object["media_type"]
-    print("media_type - {}".format(media_type))
-    service_version = json_object["service_version"]
-    print("service_version - {}".format(service_version))
-    title = json_object["title"]
-    print("title - {}".format(title))
-    url = json_object["url"]
-    print("url - {}".format(url) + "\n")
+    log.debug("IMAGE INFORMATION:")
+    for data in json_object:
+        print("{} - {}".format(data.upper(), json_object[data]))
 
-    return url
+    return json_object["hdurl"] if hd is True else json_object["url"]
 
 # ************************************************************************************************************** #
