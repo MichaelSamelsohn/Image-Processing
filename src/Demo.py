@@ -1,9 +1,12 @@
 from APOD import getAstronomyPictureOfTheDay
+from DataProcessing.src import ImageProcessing
+from DataProcessing.src.ImageProcessing import Image
 from EPIC import getNasaEpicImage
 from EarthObservation import getEarthObservationImage
 from ImageLibrary import getNasaLibraryImages
 from MWSA import getMarsWeatherServiceInformation
 from MarsRovers import getMarsRoverImages
+import cv2 as cv
 
 # TODO: Set the directory paths according to your system
 from TechTransfer import getTechTransferInformation
@@ -43,9 +46,9 @@ END_YEAR = "2020"
 
 
 def main():
-    getAstronomyPictureOfTheDay(image_directory=APOD_IMAGES,
-                                date=APOD_DATE,
-                                hd=HD)
+    # getAstronomyPictureOfTheDay(image_directory=APOD_IMAGES,
+    #                             date=APOD_DATE,
+    #                             hd=HD)
 
     # getEarthObservationImage(image_directory=EARTH_OBSERVATION_IMAGES,
     #                          lat=LAT,
@@ -70,6 +73,14 @@ def main():
     #                      mediaType=MEDIA_TYPE,
     #                      startYear=START_YEAR,
     #                      endYear=END_YEAR)
+
+    test = Image(
+        filename="/Users/michaelsamelsohn/PycharmProjects/Nasa_Images/DataProcessing/Images/Lena_Grayscale.png")
+    # test.bitPlaneSlicing(7)
+    test.convertToGrayscale()
+    # test.laplacianGradient(ddepth=-1)
+    test.laplacianFilter(padding_type="fill", diagonal_terms=False, contrast_stretch=True, override=False)
+    test.showImage("TEST")
 
 
 if __name__ == "__main__":

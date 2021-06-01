@@ -9,6 +9,6 @@ import CommandLine
 # TODO: Need to make the log file path configurable.
 log.basicConfig(
     # filename="/Users/michaelsamelsohn/PycharmProjects/Nasa_Images/Logs/ImageProcessing_" + time + ".txt",
-    filename="/Users/michaelsamelsohn/PycharmProjects/Nasa_Images/Logs/ImageProcessing.txt",
+    filename="/Users/michaelsamelsohn/PycharmProjects/Nasa_Images/Logs/Log.txt",
     filemode='w',
     format='%(asctime)s - %(levelname)s - %(message)s', level=log.DEBUG)
