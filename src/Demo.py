@@ -1,6 +1,6 @@
 from APOD import getAstronomyPictureOfTheDay
-from DataProcessing.src import ImageProcessing
-from DataProcessing.src.ImageProcessing import Image
+from DataProcessing.src import Image
+from DataProcessing.src.Image import Image
 from EPIC import getNasaEpicImage
 from EarthObservation import getEarthObservationImage
 from ImageLibrary import getNasaLibraryImages
@@ -75,12 +75,9 @@ def main():
     #                      endYear=END_YEAR)
 
     test = Image(
-        filename="/Users/michaelsamelsohn/PycharmProjects/Nasa_Images/DataProcessing/Images/Lena_Grayscale.png")
-    # test.bitPlaneSlicing(7)
-    test.convertToGrayscale()
-    # test.laplacianGradient(ddepth=-1)
-    test.laplacianFilter(padding_type="fill", diagonal_terms=False, contrast_stretch=True, override=False)
-    test.showImage("TEST")
+        filename="/Users/michaelsamelsohn/PycharmProjects/Nasa_Images/DataProcessing/Images/Lena.png")
+    # test.convertToGrayscale()
+    test.showChannelHistogram(1)
 
 
 if __name__ == "__main__":
