@@ -3,7 +3,7 @@ import Logging
 import cv2 as cv
 import numpy as np
 
-from DataProcessing.src.Decorators import BookImplementation
+from DataProcessing.ImageProcessing.Decorators import BookImplementation
 
 
 def binarization(image, threshold):
