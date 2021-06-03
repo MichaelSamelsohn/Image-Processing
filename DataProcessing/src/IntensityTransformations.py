@@ -6,6 +6,18 @@ import numpy as np
 from DataProcessing.src.Decorators import BookImplementation
 
 
+def binarization(image, threshold):
+    # TODO: Check if threshold values are between 0-255.
+    # Transforming the image to its binary version using the provided threshold.
+    # Comparing pixel values against provided threshold. If pixel value is larger, multiply by 255 (white).
+    # Otherwise, leave it as zero (black).
+    log.debug("Performing image thresholding")
+    log.info("The provided threshold is - {}".format(threshold))
+    threshold_image = (image > threshold) * 255
+    log.debug("Finished performing image thresholding")
+    return threshold_image
+
+
 @BookImplementation(book="Digital Image Processing (4th edition) - Gonzales & Woods",
                     reference="Chapter 3 - Some Basic Intensity Transformation Functions, p.122-123")
 def negative(image):

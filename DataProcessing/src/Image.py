@@ -5,6 +5,7 @@ import logging as log
 import Logging
 import matplotlib.pyplot as plt
 
+CHANNELS = {"R": 0, "G": 1, "B": 2}
 
 class Image:
     def __init__(self, filename):
@@ -233,6 +234,31 @@ class Image:
 
         log.debug("Destroying all windows")
         cv.destroyAllWindows()
+
+    def singleOutChannel(self, channel):
+        # Display the color version of a single channel of the image.
+        log.debug("Singeling out a channel")
+        log.info("Selected channel is - {}".format(channel))
+
+        single_channel = self.image.copy()
+        for i in range(3):
+            # Go through the RGB channels.
+            if i == CHANNELS[channel]:
+                continue  # Skip the desired channel.
+            single_channel[:, :, i] = 0  # zero out the other channels.
+
+        log.debug("Finished singeling out a channel")
+        self.image = single_channel
+
+    def nullifyChannel(self, channel):
+        log.debug("Nullifying out a channel")
+        log.info("Selected channel is - {}".format(channel))
+
+        null_channel = self.image.copy()
+        null_channel[:, :, CHANNELS[channel]] = 0  # Nullify the selected channel.
+
+        log.debug("Finished nullifying out a channel")
+        self.image = null_channel
 
     def showHistogram(self):
         # TODO: Works only for color images. Need to add a clause for grayscale images.

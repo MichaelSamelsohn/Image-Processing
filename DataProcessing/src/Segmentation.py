@@ -7,6 +7,7 @@ import cv2 as cv
 import numpy as np
 
 from DataProcessing.src.Decorators import BookImplementation
+from SpatialFiltering import gaussianFilter
 
 
 def threshold(image, threshold_val, max_val, type_code):
@@ -81,7 +82,7 @@ def laplacianGradient(image, ddepth):
 
 @BookImplementation(book="Digital Image Processing (4th edition) - Gonzales & Woods",
                     reference="Chapter 3 - Some Basic Intensity Transformation Functions, p.175-182")
-def laplacianFilter(image, padding_type, diagonal_terms, contrast_stretch, override):
+def laplacianGradientExtended(image, padding_type, diagonal_terms, contrast_stretch, override):
     log.debug("Applying Laplacian filter to channel array")
     log.info("Selected padding type is - {}".format(padding_type))
     log.info("Kernel will include diagonal terms - {}".format(diagonal_terms))
@@ -117,7 +118,7 @@ def laplacianFilter(image, padding_type, diagonal_terms, contrast_stretch, overr
         log.warning(
             "Overriding post filter array negative values handling (array may contain negative/saturated values)."
             " Should only be done for Marr-Hildreth/Sobel-Prewitt filter")
-        return
+        return filtered_image
 
     # Deal with negative/saturated values. Either stretch the value range or cutoff saturated values.
     log.info("Contrast stretch will be performed upon filtering completion - {}".format(contrast_stretch))
@@ -137,11 +138,11 @@ def isolatedPointDetection(image, padding_type, threshold_value):
     log.info("Selected threshold is - {}".format(threshold_value))
 
     # Step I - Filter the image with the second derivative (Laplacian kernel).
-    filtered_image = laplacianFilter(image=image,
-                                     padding_type=padding_type,
-                                     diagonal_terms=True,
-                                     contrast_stretch=False,
-                                     override=True)
+    filtered_image = laplacianGradientExtended(image=image,
+                                               padding_type=padding_type,
+                                               diagonal_terms=True,
+                                               contrast_stretch=False,
+                                               override=True)
 
     # Step II - Threshold the absolute value of the pixels.
     log.debug("Thresholding the absolute values of the pixels")
@@ -275,3 +276,64 @@ def edgeDetectionKirsch(image, padding_type, direction, contrast_stretch):
 
     log.debug("Finished performing edge detection using Kirsch model")
     return return_image
+
+
+def edgeDetectionMarrHildreth(image, padding_type1, padding_type2, padding_type3,
+                              kernel_size, sigma, threshold_value):
+    log.debug("Performing edge detection using Marr-Hildreth model (LoG)")
+    log.info("Chosen kernel size is - {}".format(kernel_size))
+    log.info("Selected deviation (to be used in the Gaussian filter) is - {}".format(sigma))
+
+    # Step I - Smooth the image with a Gaussian low-pass kernel.
+    post_gaussian_filter = gaussianFilter(image=image, border_type=padding_type1,
+                                          kernel_size=kernel_size, sigma=sigma)
+
+    # Step II - Compute the Laplacian of the image resulting from step I.
+    post_laplacian_filter = laplacianGradientExtended(image=post_gaussian_filter, padding_type=padding_type2,
+                                                      diagonal_terms=True, contrast_stretch=False,
+                                                      override=True)
+
+    post_filter_array = cv.copyMakeBorder(post_laplacian_filter, 1, 1, 1, 1, padding_type3)
+
+    # Step III - Find the zero-crossing of the image from step II.
+    log.debug("Performing zero crossing for the post Gaussian-Laplacian filters")
+    log.info("Selected threshold is - {}".format(threshold_value))
+    width, height = image.shape
+    return_array = np.zeros((width, height))
+    for row in range(width):
+        for col in range(height):
+            neighborhood = extractNeighborhood(matrix=post_filter_array,
+                                               row=row + 1, col=col + 1,
+                                               neighborhood_size=3)
+            return_array[row][col] = zeroCrossing(neighborhood=neighborhood, threshold_value=threshold_value)
+
+    return_array = cv.convertScaleAbs(return_array)
+    log.debug("Finished performing edge detection using Marr-Hildreth model")
+    return return_array
+
+
+def extractNeighborhood(matrix, row, col, neighborhood_size):
+    # Extract the neighborhood from the given matrix.
+    # The center of the neighborhood is indexed by row/col.
+    neighborhood = matrix[
+                   row - (neighborhood_size // 2):row + (neighborhood_size // 2) + 1,
+                   col - (neighborhood_size // 2):col + (neighborhood_size // 2) + 1]
+    return neighborhood
+
+
+def zeroCrossing(neighborhood, threshold_value):
+    # Check if a zero crossing occurs in the 3x3 neighborhood (dictated by the threshold).
+    zero_crossing = 0
+    if (neighborhood[0, 0] * neighborhood[2, 2] < 0) \
+            & (np.abs(neighborhood[0, 0] - neighborhood[2, 2]) > threshold_value):
+        zero_crossing = 255
+    if (neighborhood[2, 0] * neighborhood[0, 2] < 0) \
+            & (np.abs(neighborhood[2, 0] - neighborhood[0, 2]) > threshold_value):
+        zero_crossing = 255
+    if (neighborhood[1, 0] * neighborhood[1, 2] < 0) \
+            & (np.abs(neighborhood[1][0] - neighborhood[1][2]) > threshold_value):
+        zero_crossing = 255
+    if (neighborhood[0, 1] * neighborhood[2, 1] < 0) \
+            & (np.abs(neighborhood[0, 1] - neighborhood[2, 1]) > threshold_value):
+        zero_crossing = 255
+    return zero_crossing
