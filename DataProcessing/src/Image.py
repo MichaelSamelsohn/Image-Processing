@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 
 CHANNELS = {"R": 0, "G": 1, "B": 2}
 
+
 class Image:
     def __init__(self, filename):
         log.debug("Creating an object of type Image")
@@ -261,10 +262,12 @@ class Image:
         self.image = null_channel
 
     def showHistogram(self):
-        # TODO: Works only for color images. Need to add a clause for grayscale images.
         log.debug("Displaying an image histogram")
 
-        color = ('b', 'g', 'r')
+        if self.image.ndim == 3:
+            color = ('b', 'g', 'r')
+        else:
+            color = ('k')
         for i, col in enumerate(color):
             channel_histogram = cv.calcHist([self.image], channels=[i], mask=None,
                                             histSize=[256], ranges=[0, 256])
@@ -279,11 +282,9 @@ class Image:
         log.debug("Displaying a single channel histogram")
         log.info("Selected channel is - {}".format(channel))
 
-        channel_histogram = cv.calcHist([self.image], channels=[channel], mask=None,
+        channel_histogram = cv.calcHist([self.image], channels=[CHANNELS[channel]], mask=None,
                                         histSize=[256], ranges=[0, 256])
 
-        # TODO: Display the color of the histogram as the color of the selected channel (currently displays only in
-        #  blue).
-        plt.plot(channel_histogram)
+        plt.title("{} Channel Histogram".format(channel))
+        plt.plot(channel_histogram, str(channel).lower())
         plt.show()
-
