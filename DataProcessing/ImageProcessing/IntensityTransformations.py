@@ -6,14 +6,14 @@ import numpy as np
 from DataProcessing.ImageProcessing.Decorators import BookImplementation
 
 
-def binarization(image, threshold):
+def binarization(image, threshold_value):
     # TODO: Check if threshold values are between 0-255.
     # Transforming the image to its binary version using the provided threshold.
     # Comparing pixel values against provided threshold. If pixel value is larger, multiply by 255 (white).
     # Otherwise, leave it as zero (black).
     log.debug("Performing image thresholding")
-    log.info("The provided threshold is - {}".format(threshold))
-    threshold_image = (image > threshold) * 255
+    log.info("The provided threshold is - {}".format(threshold_value))
+    threshold_image = (image > threshold_value) * 255
     log.debug("Finished performing image thresholding")
     return threshold_image
 

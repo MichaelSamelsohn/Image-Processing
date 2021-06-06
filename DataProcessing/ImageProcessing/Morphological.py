@@ -3,6 +3,9 @@ import Logging
 import cv2 as cv
 import numpy as np
 
+from Decorators import BookImplementation
+from IntensityTransformations import binarization
+
 
 def erosion(image, kernel, iterations):
     log.debug("Performing erosion on an image")
@@ -49,3 +52,27 @@ def morphGradient(image, kernel):
 
     log.debug("Performing morphological gradient on an image")
     return morph_gradient
+
+
+@BookImplementation(book="Digital Image Processing (4th edition) - Gonzales & Woods",
+                    reference="Chapter 9 - Some Basic Morphological Algorithms, p.653")
+def boundaryExtraction(image, structure_element, iterations):
+    eroded_image = erosion(image=image, kernel=structure_element, iterations=iterations)
+
+    return image - eroded_image
+
+
+@BookImplementation(book="Digital Image Processing (4th edition) - Gonzales & Woods",
+                    reference="Chapter 9 - Grayscale Morphology, p.683-685")
+def topHatTransformation(image, structure_element):
+    opened_image = opening(image=image, kernel=structure_element)
+
+    return image - opened_image
+
+
+@BookImplementation(book="Digital Image Processing (4th edition) - Gonzales & Woods",
+                    reference="Chapter 9 - Grayscale Morphology, p.683-685")
+def bottomHatTransformation(image, structure_element):
+    closed_image = closing(image=image, kernel=structure_element)
+
+    return image - closed_image

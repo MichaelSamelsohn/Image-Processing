@@ -6,6 +6,7 @@ import Logging
 import cv2 as cv
 import numpy as np
 
+from Common import extractNeighborhood
 from DataProcessing.ImageProcessing.Decorators import BookImplementation
 from SpatialFiltering import gaussianFilter
 
@@ -310,15 +311,6 @@ def edgeDetectionMarrHildreth(image, padding_type1, padding_type2, padding_type3
     return_array = cv.convertScaleAbs(return_array)
     log.debug("Finished performing edge detection using Marr-Hildreth model")
     return return_array
-
-
-def extractNeighborhood(matrix, row, col, neighborhood_size):
-    # Extract the neighborhood from the given matrix.
-    # The center of the neighborhood is indexed by row/col.
-    neighborhood = matrix[
-                   row - (neighborhood_size // 2):row + (neighborhood_size // 2) + 1,
-                   col - (neighborhood_size // 2):col + (neighborhood_size // 2) + 1]
-    return neighborhood
 
 
 def zeroCrossing(neighborhood, threshold_value):
