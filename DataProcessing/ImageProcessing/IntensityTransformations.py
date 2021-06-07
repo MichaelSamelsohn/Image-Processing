@@ -33,10 +33,8 @@ def negative(image):
 def gammaCorrection(image, gamma):
     log.debug("Performing Gamma correction to an image")
     log.info("Selected Gamma value is - {}".format(gamma))
-
     gamma_correction = image / 255.0
     gamma_correction = np.power(gamma_correction, gamma)
-
     log.debug("Finished performing Gamma correction to an image")
     return gamma_correction
 
@@ -63,6 +61,7 @@ def bitPlaneReconstruction(image, degree_of_reduction):
     log.info(
         "The provided degree of reduction is - {}({})".format(degree_of_reduction, reduction_factor))
     reconstructed_image = image // reduction_factor * reduction_factor
+
     log.debug("Finished performing image color reduction")
     return reconstructed_image
 
@@ -72,6 +71,7 @@ def bitPlaneReconstruction(image, degree_of_reduction):
 def bitPlaneSlicing(image, bit_plane):
     log.debug("Performing bit plane slicing")
     log.info("The chosen bit plane is - {}".format(bit_plane))
+
     if type(bit_plane) is not int:
         log.error("The selected bit plane is not of type integer")
         return
@@ -88,6 +88,7 @@ def bitPlaneSlicing(image, bit_plane):
         bit = (i & mask) >> bit_plane
         lookup_table.put(i, bit * 255)
     bit_plane_slice = useLookupTable(image, lookup_table)
+
     log.debug("Finished performing bit plane slicing")
     return bit_plane_slice
 
@@ -102,10 +103,8 @@ def useLookupTable(image, lookup_table):
 
 def histogramEqualization(image):
     log.debug("Applying histogram equalization on an image")
-
     hist_equalization = cv.cvtColor(image, cv.COLOR_BGR2HSV)
     hist_equalization[:, :, 2] = cv.equalizeHist(hist_equalization[:, :, 2])
     equalized_image = cv.cvtColor(src=image, code=cv.COLOR_HSV2BGR)
-
     log.debug("Finished applying histogram equalization on an image")
     return equalized_image

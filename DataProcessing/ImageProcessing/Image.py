@@ -5,6 +5,8 @@ import logging as log
 import Logging
 import matplotlib.pyplot as plt
 
+from Common import imageDisplay
+
 CHANNELS = {"R": 0, "G": 1, "B": 2}
 
 
@@ -26,39 +28,15 @@ class Image:
 
     def showOriginalImage(self, window_name):
         log.debug("Displaying the original image")
-        log.info("The exit key is set to - esc")
-        while True:
-            cv.imshow(winname=window_name, mat=self.original_image)
-
-            if cv.waitKey(delay=1) & 0xFF == 27:
-                break
-
-        log.debug("Destroying all windows")
-        cv.destroyAllWindows()
+        imageDisplay(window_name=window_name, image=self.original_image)
 
     def showImage(self, window_name):
         log.debug("Displaying the current image")
-        log.info("The exit key is set to - esc")
-        while True:
-            cv.imshow(winname=window_name, mat=self.image)
-
-            if cv.waitKey(delay=1) & 0xFF == 27:
-                break
-
-        log.debug("Destroying all windows")
-        cv.destroyAllWindows()
+        imageDisplay(window_name=window_name, image=self.image)
 
     def showConcatImages(self, window_name, scale):
         log.debug("Displaying both the original images and the filtered one")
-        log.info("The exit key is set to - esc")
-        while True:
-            cv.imshow(winname=window_name, mat=self.ConcatMultipleImages(scale=scale))
-
-            if cv.waitKey(delay=1) & 0xFF == 27:
-                break
-
-        log.debug("Destroying all windows")
-        cv.destroyAllWindows()
+        imageDisplay(window_name=window_name, image=self.ConcatMultipleImages(scale=scale))
 
     # Define the function, the first parameter is the zoom ratio, and the second parameter is a tuple or list of
     # pictures to be displayed
@@ -119,27 +97,35 @@ class Image:
         return ver
 
     def convertToGrayscale(self):
+        log.debug("Converting the image to grayscale")
         self.image = cv.cvtColor(self.image, cv.COLOR_BGR2GRAY)
+        log.debug("Finished conversion to grayscale")
 
-    def colorModelling(self, color_model):
-        self.image = cv.cvtColor(src=self.image, code=color_model)
+    def colorModelling(self, color_space):
+        # TODO: Handle case where the selected color_space exists (otherwise, leave as is).
+
+        log.debug("Convert image to the following color space - {}".format(color_space))
+        self.image = cv.cvtColor(src=self.image, code=color_space)
+        log.debug("Finished conversion to {} color space".format(color_space))
 
     def resizeImage(self, dsize):
         # dsize is the shape parameter (tuple) for the height and width of the reshaped image.
         # Note that dsize is in reverse order to the height and width
         # (first parameter is the width and the second one is height).
 
-        log.debug("Resizing (by specific shape) image using OpenCV resize method")
-        log.info("The new width and height are: w-{}, h-{}, respectively".format(dsize[0], dsize[1]))
+        # TODO: Add check that dsize has logical values (otherwise, leave as is).
 
+        log.debug("Resizing (to specific shape) image using OpenCV resize method")
+        log.debug("The new width and height are: w-{}, h-{}, respectively".format(dsize[0], dsize[1]))
         self.image = cv.resize(self.image, dsize=dsize)
-
-        log.debug("Finished resizing (by specific shape) image using OpenCV resize method")
+        log.debug("Finished resizing (to specific shape) image using OpenCV resize method")
 
     def resizeImageByRatio(self, ratio):
         # ratio is the shape ratio parameter (tuple) for the height and width of the reshaped image.
         # Note that ratio is in reverse order to the height and width
         # (first parameter is the width and the second one is height).
+
+        # TODO: Add check that ratio has logical values (otherwise, leave as is).
 
         log.debug("Resizing (by ratio) image using OpenCV resize method")
         log.info("The new ratio for width and height is: w-{}, h-{}, respectively".format(ratio[0], ratio[1]))
@@ -155,11 +141,11 @@ class Image:
         # 1 - Flip along the vertical axis.
         # -1 - Flip along both axes.
 
+        # TODO: Add check that flip_code has logical values (otherwise, leave as is).
+
         log.debug("Flipping image using OpenCV flip method")
         log.info("Selected flip code is - {}".format(flip_code))
-
         self.image = cv.flip(self.image, flipCode=flip_code)
-
         log.debug("Finished flipping image using OpenCV flip method")
 
     def drawRectangle(self, pt1, pt2, color, thickness):
@@ -169,15 +155,13 @@ class Image:
         # thickness - thickness of the circumference of the rectangle. -1 will fill the rectangle.
 
         log.debug("Drawing a rectangle on the image using OpenCV rectangle method")
-        log.info("Top left corner of the rectangle is - ({},{})".format(pt1[0], pt1[1]))
-        log.info("Bottom right corner of the rectangle is - ({},{})".format(pt2[0], pt2[1]))
-        log.info("Selected color is - ({},{},{})".format(color[0], color[1], color[2]))
-        log.info("Selected thickness is - {}".format(thickness))
-
+        log.debug("Top left corner of the rectangle is - ({},{})".format(pt1[0], pt1[1]))
+        log.debug("Bottom right corner of the rectangle is - ({},{})".format(pt2[0], pt2[1]))
+        log.debug("Selected color is - ({},{},{})".format(color[0], color[1], color[2]))
+        log.debug("Selected thickness is - {}".format(thickness))
         self.image = cv.rectangle(img=self.image,
                                   pt1=pt1, pt2=pt2,
                                   color=color, thickness=thickness)
-
         log.debug("Finished drawing a rectangle on the image using OpenCV rectangle method")
 
     def drawCircle(self, center, radius, color, thickness):
@@ -187,16 +171,14 @@ class Image:
         # thickness - thickness of the circumference of the rectangle. -1 will fill the rectangle.
 
         log.debug("Drawing a circle on the image using OpenCV circle method")
-        log.info("Center of the circle is - ({},{})".format(center[0], center[1]))
-        log.info("Radius of the circle is - {}".format(radius))
-        log.info("Selected color is - ({},{},{})".format(color[0], color[1], color[2]))
-        log.info("Selected thickness is - {}".format(thickness))
-
+        log.debug("Center of the circle is - ({},{})".format(center[0], center[1]))
+        log.debug("Radius of the circle is - {}".format(radius))
+        log.debug("Selected color is - ({},{},{})".format(color[0], color[1], color[2]))
+        log.debug("Selected thickness is - {}".format(thickness))
         self.image = cv.circle(img=self.image,
                                center=center, radius=radius,
                                color=color,
                                thickness=thickness)
-
         log.debug("Finished drawing a circle on the image using OpenCV circle method")
 
     def drawLine(self, pt1, pt2, color, thickness):
@@ -206,16 +188,14 @@ class Image:
         # thickness - thickness of the circumference of the rectangle. -1 will fill the rectangle.
 
         log.debug("Drawing a line on the image using OpenCV line method")
-        log.info("First corner of the line is - ({},{})".format(pt1[0], pt1[1]))
-        log.info("Second corner of the line is - ({},{})".format(pt2[0], pt2[1]))
-        log.info("Selected color is - ({},{},{})".format(color[0], color[1], color[2]))
-        log.info("Selected thickness is - {}".format(thickness))
-
+        log.debug("First corner of the line is - ({},{})".format(pt1[0], pt1[1]))
+        log.debug("Second corner of the line is - ({},{})".format(pt2[0], pt2[1]))
+        log.debug("Selected color is - ({},{},{})".format(color[0], color[1], color[2]))
+        log.debug("Selected thickness is - {}".format(thickness))
         self.image = cv.line(img=self.image,
                              pt1=pt1, pt2=pt2,
                              color=color,
                              thickness=thickness)
-
         log.debug("Finished drawing a line on the image using OpenCV line method")
 
     def drawText(self, text, org, fontFace, fontScale, color, thickness):
@@ -227,21 +207,19 @@ class Image:
         # thickness - thickness of the circumference of the rectangle. -1 will fill the rectangle.
 
         log.debug("Printing text on the image using OpenCV putText method")
-        log.info("The selected text is - {}}".format(text))
-        log.info("Bottom left corner of the text string in the image is - ({},{})".format(org[0], org[1]))
-        log.info("Selected fontface is - {}".format(fontFace))
-        log.info("Selected fontScale is - {}".format(fontScale))
-        log.info("Selected color is - ({},{},{})".format(color[0], color[1], color[2]))
-        log.info("Selected thickness is - {}".format(thickness))
-
+        log.debug("The selected text is - {}}".format(text))
+        log.debug("Bottom left corner of the text string in the image is - ({},{})".format(org[0], org[1]))
+        log.debug("Selected fontface is - {}".format(fontFace))
+        log.debug("Selected fontScale is - {}".format(fontScale))
+        log.debug("Selected color is - ({},{},{})".format(color[0], color[1], color[2]))
+        log.debug("Selected thickness is - {}".format(thickness))
         self.image = cv.putText(img=self.image,
                                 text=text, org=org,
                                 fontFace=fontFace, fontScale=fontScale,
                                 color=color, thickness=thickness, lineType=cv.LINE_AA)
-
         log.debug("Finished printing text on the image using OpenCV putText method")
 
-    def drawCircleOnMouseCallback(self, window_title, exit_key, radius, color, thickness):
+    def drawCircleOnMouseCallback(self, window_title, radius, color, thickness):
         # radius - Radius of the circle.
         # color - list of three colors (R,G,B).
         # thickness - thickness of the circumference of the rectangle. -1 will fill the rectangle.
@@ -260,16 +238,9 @@ class Image:
         cv.setMouseCallback(window_title, draw_circle)
 
         # Showing image with OpenCV.
-        while True:
-            cv.imshow(winname=window_title, mat=self.image)
+        imageDisplay(window_name=window_title, image=self.image)
 
-            if cv.waitKey(100) & 0xFF == exit_key:
-                break
-
-        log.debug("Destroying all windows")
-        cv.destroyAllWindows()
-
-    def drawRectangleOnMouseCallback(self, window_title, exit_key, color, thickness):
+    def drawRectangleOnMouseCallback(self, window_title, color, thickness):
         # Global variables for rectangle drawing using mouse callbacks.
         drawing = False
         ix, iy = -1, -1
@@ -297,19 +268,15 @@ class Image:
         cv.setMouseCallback(window_title, draw_rectangle)
 
         # Showing image with OpenCV.
-        while True:
-            cv.imshow(winname=window_title, mat=self.image)
-
-            if cv.waitKey(100) & 0xFF == exit_key:
-                break
-
-        log.debug("Destroying all windows")
-        cv.destroyAllWindows()
+        imageDisplay(window_name=window_title, image=self.image)
 
     def singleOutChannel(self, channel):
         # Display the color version of a single channel of the image.
+        # The channel options are - R, G, B.
         log.debug("Singeling out a channel")
         log.info("Selected channel is - {}".format(channel))
+
+        # TODO: Add a check that the image is not grayscale (has 3 channels).
 
         single_channel = self.image.copy()
         for i in range(3):
@@ -318,10 +285,11 @@ class Image:
                 continue  # Skip the desired channel.
             single_channel[:, :, i] = 0  # zero out the other channels.
 
-        log.debug("Finished singeling out a channel")
         self.image = single_channel
+        log.debug("Finished singeling out a channel")
 
     def nullifyChannel(self, channel):
+        # The channel options are - R, G, B.
         log.debug("Nullifying out a channel")
         log.info("Selected channel is - {}".format(channel))
 
@@ -337,7 +305,7 @@ class Image:
         if self.image.ndim == 3:
             color = ('b', 'g', 'r')
         else:
-            color = ('k')
+            color = 'k'
         for i, col in enumerate(color):
             channel_histogram = cv.calcHist([self.image], channels=[i], mask=None,
                                             histSize=[256], ranges=[0, 256])

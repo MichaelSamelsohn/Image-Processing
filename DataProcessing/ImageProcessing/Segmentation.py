@@ -6,7 +6,7 @@ import Logging
 import cv2 as cv
 import numpy as np
 
-from Common import extractNeighborhood
+from Common import extractNeighborhood, zeroCrossing
 from DataProcessing.ImageProcessing.Decorators import BookImplementation
 from SpatialFiltering import gaussianFilter
 
@@ -20,12 +20,10 @@ def threshold(image, threshold_val, max_val, type_code):
     log.info("Selected threshold value is - {}".format(threshold_val))
     log.info("Selected max value is - {}".format(max_val))
     log.info("Selected type code is - {}".format(type_code))
-
     thresh, threshold_image = cv.threshold(src=image,
                                            thresh=threshold_val,
                                            maxval=max_val,
                                            type=type_code)
-
     log.debug("Finished applying an image threshold")
     return threshold_image
 
@@ -43,13 +41,11 @@ def adaptiveThreshold(image, max_val, adaptive_method, threshold_type, block_siz
     log.info("Selected threshold type is - {}".format(threshold_type))
     log.info("Selected block size is - {}".format(block_size))
     log.info("Selected c value is - {}".format(c))
-
     adaptive_threshold_image = cv.adaptiveThreshold(src=image,
                                                     maxValue=max_val,
                                                     adaptiveMethod=adaptive_method,
                                                     thresholdType=threshold_type,
                                                     blockSize=block_size, C=c)
-
     log.debug("Applying an image adaptive threshold")
     return adaptive_threshold_image
 
@@ -74,9 +70,7 @@ def sobelGradient(image, ddepth, kernel_size, direction):
 def laplacianGradient(image, ddepth):
     log.debug("Applying a Laplacian gradient on an image")
     log.info("Selected ddpeth is - {}".format(ddepth))
-
     laplacian_gradient = cv.Laplacian(image, ddepth)
-
     log.debug("Finished applying a Laplacian gradient on an image")
     return laplacian_gradient
 
@@ -309,23 +303,6 @@ def edgeDetectionMarrHildreth(image, padding_type1, padding_type2, padding_type3
             return_array[row][col] = zeroCrossing(neighborhood=neighborhood, threshold_value=threshold_value)
 
     return_array = cv.convertScaleAbs(return_array)
+
     log.debug("Finished performing edge detection using Marr-Hildreth model")
     return return_array
-
-
-def zeroCrossing(neighborhood, threshold_value):
-    # Check if a zero crossing occurs in the 3x3 neighborhood (dictated by the threshold).
-    zero_crossing = 0
-    if (neighborhood[0, 0] * neighborhood[2, 2] < 0) \
-            & (np.abs(neighborhood[0, 0] - neighborhood[2, 2]) > threshold_value):
-        zero_crossing = 255
-    if (neighborhood[2, 0] * neighborhood[0, 2] < 0) \
-            & (np.abs(neighborhood[2, 0] - neighborhood[0, 2]) > threshold_value):
-        zero_crossing = 255
-    if (neighborhood[1, 0] * neighborhood[1, 2] < 0) \
-            & (np.abs(neighborhood[1][0] - neighborhood[1][2]) > threshold_value):
-        zero_crossing = 255
-    if (neighborhood[0, 1] * neighborhood[2, 1] < 0) \
-            & (np.abs(neighborhood[0, 1] - neighborhood[2, 1]) > threshold_value):
-        zero_crossing = 255
-    return zero_crossing
