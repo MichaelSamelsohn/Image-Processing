@@ -2,7 +2,6 @@ import requests
 import os
 import CommandLine
 import logging as log
-import Logging
 
 API_KEY = "api_key=fymalkzvEUpMBhhBIpi39IQu0zqsjMy7K2AYhiwJ"
 MARS_ROVER_PHOTOS_BASE_URL = "https://api.nasa.gov/mars-photos/api/v1/"
@@ -12,7 +11,6 @@ NUMBER_OF_PHOTOS_TO_COLLECT = 1
 # ************************************************************************************************************** #
 
 def getMarsRoverImages(image_directory, rover, sol, date):
-    print("\nRetrieving Mars rover images\n")
     log.debug("Retrieving Mars rover images")
     log.info("The options for the Mars rovers are - Spirit/Opportunity/Curiosity")
     log.info("The selected directory is - {}".format(image_directory))

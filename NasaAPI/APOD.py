@@ -1,8 +1,9 @@
+import warnings
+
 import requests
 import os
 import CommandLine
 import logging as log
-import Logging
 
 API_KEY = "api_key=fymalkzvEUpMBhhBIpi39IQu0zqsjMy7K2AYhiwJ"
 APOD_BASE_URL = "https://api.nasa.gov/planetary/apod?"
@@ -35,6 +36,7 @@ def getAstronomyPictureOfTheDayUrl(date, hd):
     r = requests.get(APOD_BASE_URL + url_complement)
     log.debug("Request status code is - {}".format(r.status_code))
     if r.status_code == 400:
+        warnings.warn(UserWarning("Bad date format or non-existing date given?"))
         log.warning("Perhaps bad date format or non-existing date given?")
     assert r.status_code == 200, "Status code is " + str(r.status_code)
 

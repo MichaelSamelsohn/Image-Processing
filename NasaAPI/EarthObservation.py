@@ -2,7 +2,6 @@ import requests
 import os
 import CommandLine
 import logging as log
-import Logging
 
 API_KEY = "api_key=fymalkzvEUpMBhhBIpi39IQu0zqsjMy7K2AYhiwJ"
 EARTH_OBSERVATION_ASSETS_BASE_URL = "https://api.nasa.gov/planetary/earth/assets?"
@@ -13,7 +12,6 @@ EARTH_OBSERVATION_IMAGERY_BASE_URL = "https://api.nasa.gov/planetary/earth/image
 
 def getEarthObservationImage(image_directory, lat, lon, dim, date, direct_method):
     # TODO: Add explanation to the difference between the methods (direct/indirect).
-    print("\nRetrieving Earth observation information and images\n")
     log.debug("Retrieving Earth observation information and images")
     log.info("The selected directory is - {}".format(image_directory))
     log.info("Selected latitude is - {}".format(lat))

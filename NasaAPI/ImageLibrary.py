@@ -2,7 +2,6 @@ import requests
 import os
 import CommandLine
 import logging as log
-import Logging
 
 NASA_LIBRARY_BASE_URL = "https://images-api.nasa.gov/search?"
 NUMBER_OF_PHOTOS_TO_COLLECT = 1
@@ -11,7 +10,6 @@ NUMBER_OF_PHOTOS_TO_COLLECT = 1
 # ************************************************************************************************************** #
 
 def getNasaLibraryImages(image_directory, q, mediaType, startYear, endYear):
-    print("\nRetrieving NASA library images using a query\n")
     log.debug("Retrieving NASA library images using a query")
     log.info("Provided query is - {}".format(q))
     log.info("Selected media type is - {}".format(mediaType))
