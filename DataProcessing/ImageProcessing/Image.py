@@ -6,6 +6,8 @@ import Logging
 import matplotlib.pyplot as plt
 
 from Common import imageDisplay
+from FrequencyDomain import imageMagnitudeSpectrum
+from IntensityTransformations import convertToGrayscale
 
 CHANNELS = {"R": 0, "G": 1, "B": 2}
 
@@ -98,7 +100,7 @@ class Image:
 
     def convertToGrayscale(self):
         log.debug("Converting the image to grayscale")
-        self.image = cv.cvtColor(self.image, cv.COLOR_BGR2GRAY)
+        self.image = convertToGrayscale(image=self.image)
         log.debug("Finished conversion to grayscale")
 
     def colorModelling(self, color_space):
@@ -298,6 +300,11 @@ class Image:
 
         log.debug("Finished nullifying out a channel")
         self.image = null_channel
+
+    def showMagnitudeSpectrum(self, scale):
+        magnitude_spectrum = imageMagnitudeSpectrum(image=self.image)
+        self.image = cv.normalize(magnitude_spectrum, None, 255, 0, cv.NORM_MINMAX, cv.CV_8UC1)
+        self.showConcatImages(window_name="Magnitude Spectrum", scale=scale)
 
     def showHistogram(self):
         log.debug("Displaying an image histogram")

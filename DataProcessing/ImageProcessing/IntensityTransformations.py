@@ -6,6 +6,17 @@ import numpy as np
 from DataProcessing.ImageProcessing.Decorators import BookImplementation
 
 
+def convertToGrayscale(image):
+    log.debug("Converting the image to grayscale format")
+
+    if image.ndim == 3:  # Check if image is not grayscale.
+        log.debug("Image is not grayscale (conversion required)")
+        return cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+    else:  # Image is already grayscale.
+        log.warning("Image is already grayscale. Returning image as is")
+        return image
+
+
 def binarization(image, threshold_value):
     # TODO: Check if threshold values are between 0-255.
     # Transforming the image to its binary version using the provided threshold.
@@ -70,7 +81,7 @@ def bitPlaneReconstruction(image, degree_of_reduction):
                     reference="Chapter 3 - Some Basic Intensity Transformation Functions, p.131-133")
 def bitPlaneSlicing(image, bit_plane):
     log.debug("Performing bit plane slicing")
-    log.info("The chosen bit plane is - {}".format(bit_plane))
+    log.debug("The chosen bit plane is - {}".format(bit_plane))
 
     if type(bit_plane) is not int:
         log.error("The selected bit plane is not of type integer")

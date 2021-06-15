@@ -6,8 +6,17 @@
       <sourceFolder url="file://$MODULE_DIR$/Automation" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Common" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/DataProcessing/ImageProcessing" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/NasaAPI/NasaAPI2" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/NasaAPI/NasaAPI2/tests" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="PyNamespacePackagesService">
+    <option name="namespacePackageFolders">
+      <list>
+        <option value="$MODULE_DIR$/NasaAPI" />
+      </list>
+    </option>
   </component>
 </module>
